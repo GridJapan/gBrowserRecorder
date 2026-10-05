@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>gBrowserRecorder</title>
+<style>
+  :root { color-scheme: light dark; --red: #d93025; --blue: #1a73e8; --muted: #6b7280; --line: #d1d5db; --bg: #fff; --fg: #1f2937; }
+  @media (prefers-color-scheme: dark) { :root { --muted: #9ca3af; --line: #4b5563; --bg: #202124; --fg: #e8eaed; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 20px; background: var(--bg); color: var(--fg); font: 15px/1.6 -apple-system, "Hiragino Sans", sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 14px; }
+  .big { display: block; width: 100%; padding: 18px; font: inherit; font-size: 18px; font-weight: 700; border: 0; border-radius: 10px; color: #fff; background: var(--blue); cursor: pointer; }
+  .big.stop { background: var(--red); }
+  .big:disabled { opacity: .5; cursor: default; }
+  .hint { color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+  video { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; display: block; }
+  .live { display: flex; align-items: baseline; justify-content: space-between; margin: 12px 0; font-variant-numeric: tabular-nums; }
+  #elapsed { font-size: 32px; font-weight: 700; color: var(--red); }
+  #fps { color: var(--muted); font-size: 14px; }
+  .row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+  .row > span { width: 48px; color: var(--muted); font-size: 13px; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg button { border: 0; background: transparent; color: inherit; padding: 4px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--blue); color: #fff; }
+  #settings { margin-top: 16px; padding-top: 6px; border-top: 1px solid var(--line); }
+  #msg { margin-top: 12px; font-size: 13px; word-break: break-all; }
+  .links { display: flex; gap: 16px; margin-top: 10px; font-size: 14px; }
+  .links a { color: var(--blue); cursor: pointer; }
+  footer { margin-top: 18px; font-size: 12px; color: var(--muted); }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+  <!-- 待機中 -->
+  <section id="idle">
+    <h1>どのタブを録画しますか？</h1>
+    <button class="big" id="pick">タブを選ぶ</button>
+    <p class="hint">タブの一覧が出ます。録画したいタブを選んで「共有」を押すと、録画が始まります。</p>
+    <div id="settings" class="hidden">
+      <div class="row"><span>FPS</span>
+        <div class="seg" id="fpsSeg"><button data-v="15">15</button><button data-v="24">24</button><button data-v="30">30</button><button data-v="60">60</button></div>
+      </div>
+      <div class="row"><span>画質</span>
+        <div class="seg" id="resSeg"><button data-v="720">720p</button><button data-v="1080">1080p</button><button data-v="0">原寸</button></div>
+      </div>
+      <div class="row"><span>音声</span>
+        <label><input type="checkbox" id="mic"> マイク（自分の声）も録る</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 録画中 -->
+  <section id="recording" class="hidden">
+    <h1>録画中</h1>
+    <video id="preview" muted autoplay playsinline></video>
+    <div class="live"><span id="elapsed">00:00</span><span id="fps"></span></div>
+    <button class="big stop" id="stop">録画停止</button>
+    <p class="hint">この窓を閉じると録画が止まります。</p>
+  </section>
+
+  <div id="msg"></div>
+  <div class="links hidden" id="done">
+    <a id="show">Finder で表示</a>
+    <a id="open">再生</a>
+  </div>
+
+  <footer id="advRow"><label><input type="checkbox" id="adv"> アドバンスモード</label></footer>
+
+  <script src="recorder.js"></script>
+</body>
+</html>

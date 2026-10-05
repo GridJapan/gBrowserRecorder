@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><title>gbr-test-page</title>
+<canvas id="c" width="1280" height="720"></canvas>
+<script>
+const c=document.getElementById('c').getContext('2d');let f=0;
+(function loop(){f++;c.fillStyle=`hsl(${f%360},70%,50%)`;c.fillRect(0,0,1280,720);c.fillStyle='#fff';c.font='120px sans-serif';c.fillText('frame '+f,80,400);requestAnimationFrame(loop)})();
+const ctx=new AudioContext();const o=ctx.createOscillator();o.frequency.value=440;const g=ctx.createGain();g.gain.value=0.2;o.connect(g).connect(ctx.destination);o.start();
+</script>
